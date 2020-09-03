@@ -11,7 +11,7 @@ import vn.com.sky.base.SortableEntity;
 
 @EqualsAndHashCode(callSuper = false)
 @Data
-@Table
+@Table("company")
 public class OwnerOrg extends SortableEntity {
     private Long parentId;
     private Integer type;

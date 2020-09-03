@@ -30,6 +30,10 @@ public class AuthenticationManager implements ReactiveAuthenticationManager {
         return sjwt.getUserIdFromToken(authToken);
     }
 
+    public Boolean isValidToken (String token) {
+    	return sjwt.validateToken(token);
+    }
+    
     @Override
     public Mono<Authentication> authenticate(Authentication authentication) {
         String authToken = authentication.getCredentials().toString();

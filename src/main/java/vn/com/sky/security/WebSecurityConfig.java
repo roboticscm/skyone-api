@@ -80,6 +80,7 @@ public class WebSecurityConfig {
                 "/api/sys/auth/get-qrcode",
                 "/api/sys/auth/reset-password",
                 "/api/sys/auth/login",
+                "/api/sys/auth/check-token",
                 "/api/sys/auth/login-without-gen-token",
                 "/images/**",
                 "/favicon.ico",

@@ -18,7 +18,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import lombok.AllArgsConstructor;
 import reactor.core.publisher.Mono;
 import vn.com.sky.base.GenericREST;
+import vn.com.sky.security.AuthenticationManager;
 import vn.com.sky.security.PBKDF2Encoder;
+import vn.com.sky.security.SJwt;
 import vn.com.sky.sys.humanororg.HumanOrOrgRepo;
 import vn.com.sky.sys.model.AuthToken;
 import vn.com.sky.util.MyServerResponse;
@@ -31,10 +33,12 @@ public class LoginREST extends GenericREST {
     private HumanOrOrgRepo humanRepo;
     private AuthTokenRepo authTokenRepo;
     private PBKDF2Encoder encode;
+    private AuthenticationManager authenticationManager;
     
     @Bean
     public RouterFunction<?> loginRoutes() {
-        return route(POST("/api/sys/auth/login"), this::loginHandler)
+        return route(POST("/api/sys/auth/login"), this::login)
+        	.andRoute(GET(buildURL("auth", this::checkToken)), this::checkToken)	
             .andRoute(POST(buildURL("auth", this::loginWithoutGenToken)), this::loginWithoutGenToken)
             .andRoute(POST(buildURL("auth", this::getQrcode)), this::getQrcode)
             .andRoute(POST(buildURL("auth", this::updateAuthToken)), this::updateAuthToken)
@@ -55,6 +59,24 @@ public class LoginREST extends GenericREST {
             .andRoute(GET("/"), request -> ServerResponse.ok().render("login/login"));
     }
 
+    private Mono<ServerResponse> checkToken(ServerRequest request) {
+        // SYSTEM BLOCK CODE
+        // PLEASE DO NOT EDIT
+        if (request == null) {
+            String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+            return Mono.just(new MyServerResponse(methodName));
+        }
+        // END SYSTEM BLOCK CODE
+        try {
+        	return ok(authenticationManager.isValidToken(getParam(request, "token")), Boolean.class);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ok(false, Boolean.class);
+    }
+    
+    
     private Mono<ServerResponse> loginWithoutGenToken(ServerRequest request) {
         // SYSTEM BLOCK CODE
         // PLEASE DO NOT EDIT
@@ -150,7 +172,7 @@ public class LoginREST extends GenericREST {
     }
 
 
-    private Mono<ServerResponse> loginHandler(ServerRequest request) {
+    private Mono<ServerResponse> login(ServerRequest request) {
         request
             .remoteAddress()
             .ifPresent(

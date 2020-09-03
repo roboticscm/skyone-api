@@ -72,11 +72,11 @@ public class GenericREST {
 	}
 
 	protected Mono<ServerResponse> ok(Object item) {
-		return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(item), String.class);
+		return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(Mono.just(item), String.class);
 	}
 
 	protected <T> Mono<ServerResponse> ok(Object item, Class<T> clazz) {
-		return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).body(Mono.just(item), clazz);
+		return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON_UTF8).body(Mono.just(item), clazz);
 	}
 
 	protected Mono<ServerResponse> error(Throwable e) {
@@ -86,11 +86,11 @@ public class GenericREST {
 	}
 
 	protected Mono<ServerResponse> error(String e) {
-		return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON).bodyValue(e);
+		return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).bodyValue(e);
 	}
 
 	protected Mono<ServerResponse> error(String field, String message) {
-		return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON)
+		return ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8)
 				.bodyValue("{\"" + field + "\":" + "\"" + message + "\"}");
 	}
 
